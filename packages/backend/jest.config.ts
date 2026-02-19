@@ -6,7 +6,7 @@ const config: Config = {
   moduleNameMapper: {
     '^@ttt/shared$': '<rootDir>/../shared/src/index.ts',
   },
-  testPathPattern: 'src/__tests__',
+  testMatch: ['<rootDir>/src/__tests__/**/*.test.ts'],
 };
 
 export default config;
