@@ -17,7 +17,9 @@ export const io = new Server(httpServer, {
   cors: { origin: 'http://localhost:3000', credentials: true },
 });
 
-const PORT = process.env.PORT ?? 4000;
-httpServer.listen(PORT, () => console.log(`Backend listening on :${PORT}`));
+if (require.main === module) {
+  const PORT = process.env.PORT ?? 4000;
+  httpServer.listen(PORT, () => console.log(`Backend listening on :${PORT}`));
+}
 
 export { app, httpServer };
