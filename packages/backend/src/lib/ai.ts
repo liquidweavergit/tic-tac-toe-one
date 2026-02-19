@@ -1,5 +1,5 @@
 // packages/backend/src/lib/ai.ts
-import { checkWinner } from './gameLogic';
+import { checkWinner, Cell } from './gameLogic';
 
 type Player = 'x' | 'o';
 
@@ -8,7 +8,7 @@ function opponent(p: Player): Player {
 }
 
 function minimax(
-  board: string[],
+  board: Cell[],
   player: Player,
   isMaximizing: boolean,
   aiPlayer: Player,
@@ -35,7 +35,7 @@ function minimax(
 // Prefer center, then corners, then edges as tiebreakers
 const MOVE_ORDER = [4, 0, 2, 6, 8, 1, 3, 5, 7];
 
-export function getBestMove(board: string[], aiPlayer: Player): number {
+export function getBestMove(board: Cell[], aiPlayer: Player): number {
   let bestScore = -Infinity;
   let bestMove = -1;
 
