@@ -6,6 +6,7 @@ import { Server } from 'socket.io';
 import { authRouter } from './routes/auth';
 import { userRouter } from './routes/user';
 import { registerLobbyNamespace } from './socket/lobbyHandler';
+import { registerGameNamespace } from './socket/gameHandler';
 
 const app = express();
 const httpServer = createServer(app);
@@ -24,6 +25,7 @@ export const io = new Server(httpServer, {
 });
 
 registerLobbyNamespace(io);
+registerGameNamespace(io);
 
 if (require.main === module) {
   const PORT = process.env.PORT ?? 4000;
