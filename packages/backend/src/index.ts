@@ -4,6 +4,7 @@ import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { authRouter } from './routes/auth';
+import { userRouter } from './routes/user';
 
 const app = express();
 const httpServer = createServer(app);
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.get('/health', (_req, res) => res.json({ ok: true }));
 
 app.use('/api/v1', authRouter);
+app.use('/api/v1', userRouter);
 
 export const io = new Server(httpServer, {
   cors: { origin: 'http://localhost:3000', credentials: true },
