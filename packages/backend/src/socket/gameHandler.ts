@@ -45,7 +45,7 @@ async function buildGameState(gameId: string): Promise<GameState> {
     playerX: game.playerX,
     playerO: game.playerO ?? null,
     winner: (game.winner as Winner) ?? null,
-    winningCells: null, // Recalculated from board if needed
+    winningCells: checkWinner(board)?.cells ?? null,
     elapsedSeconds,
   };
 }
@@ -119,6 +119,18 @@ export function registerGameNamespace(io: Server) {
 
       const state = await buildGameState(game.id);
       io.of('/game').to(game.id).emit(GAME_EVENTS.GAME_STATE, state);
+
+      // Notify lobby clients that the player count and active games have changed
+      const [activeGames, onlineCount, waitingCount] = await Promise.all([
+        prisma.game.findMany({ where: { status: { in: ['waiting', 'countdown', 'active'] } }, include: { playerX: { select: { screenName: true } }, playerO: { select: { screenName: true } } } }),
+        io.of('/lobby').sockets.size,
+        matchmakingQueue.size(),
+      ]);
+      io.of('/lobby').emit(LOBBY_EVENTS.LOBBY_UPDATE, {
+        onlineCount,
+        activeGames: activeGames.map((g) => ({ id: g.id, playerX: g.playerX.screenName, playerO: g.playerO?.screenName ?? null })),
+        waitingCount,
+      });
     });
   });
 
@@ -142,6 +154,8 @@ export function registerGameNamespace(io: Server) {
 
       const game = await prisma.game.findUniqueOrThrow({ where: { id: gameId } });
       if (game.status !== 'active') return;
+
+      if (typeof cell !== 'number' || cell < 0 || cell > 8 || !Number.isInteger(cell)) return;
 
       const board = boardFromString(game.boardState);
       if (board[cell] !== '_') return;
@@ -174,6 +188,7 @@ export function registerGameNamespace(io: Server) {
           if (loserId) await prisma.user.update({ where: { id: loserId }, data: { losses: { increment: 1 } } });
         }
 
+        gameStartTimes.delete(gameId);
         const state = await buildGameState(gameId);
         gameNs.to(gameId).emit(GAME_EVENTS.GAME_STATE, state);
         gameNs.to(gameId).emit(GAME_EVENTS.GAME_OVER, {
@@ -217,6 +232,7 @@ export function registerGameNamespace(io: Server) {
               } else if (aiWin.winner === 'x') {
                 await prisma.user.update({ where: { id: game.playerXId }, data: { wins: { increment: 1 } } });
               }
+              gameStartTimes.delete(gameId);
               const s = await buildGameState(gameId);
               gameNs.to(gameId).emit(GAME_EVENTS.GAME_STATE, s);
               gameNs.to(gameId).emit(GAME_EVENTS.GAME_OVER, { winner: aiWin.winner, winningCells: aiWin.cells });
