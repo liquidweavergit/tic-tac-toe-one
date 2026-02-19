@@ -78,3 +78,18 @@ describe('GET /api/v1/usernameAvailable', () => {
     expect(res.body).toEqual({ available: false });
   });
 });
+
+describe('GET /api/v1/screenNameAvailable', () => {
+  it('returns true when screen name is free', async () => {
+    const res = await request(app).get('/api/v1/screenNameAvailable?screenName=newname');
+    expect(res.body).toEqual({ available: true });
+  });
+
+  it('returns false when screen name is taken', async () => {
+    await request(app)
+      .post('/api/v1/signUp')
+      .send({ username: 'alice', password: 'pw', screenName: 'Alice' });
+    const res = await request(app).get('/api/v1/screenNameAvailable?screenName=Alice');
+    expect(res.body).toEqual({ available: false });
+  });
+});
