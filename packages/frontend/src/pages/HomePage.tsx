@@ -4,6 +4,7 @@ import { LOBBY_EVENTS } from '@ttt/shared';
 import { useAuthStore } from '../store/authStore';
 import { useLobbyStore } from '../store/lobbyStore';
 import { useLobbySocket } from '../hooks/useLobbySocket';
+import { api } from '../lib/api';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -13,7 +14,8 @@ export function HomePage() {
 
   const socketRef = useLobbySocket((gameId) => navigate(`/game/${gameId}`));
 
-  function handleLogout() {
+  async function handleLogout() {
+    await api.signOut().catch(() => {});
     clearUser();
     navigate('/login');
   }

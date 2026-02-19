@@ -4,11 +4,12 @@ interface PlayerPanelProps {
   player: PlayerInfo | null;
   side: 'x' | 'o';
   isActive: boolean;
+  isMe: boolean;
   status: GameStatus;
   winner: Winner;
 }
 
-export function PlayerPanel({ player, side, isActive, status, winner }: PlayerPanelProps) {
+export function PlayerPanel({ player, side, isActive, isMe, status, winner }: PlayerPanelProps) {
   const isWinner = winner === side;
   const isLoser = winner !== null && winner !== 'draw' && winner !== side;
 
@@ -29,7 +30,7 @@ export function PlayerPanel({ player, side, isActive, status, winner }: PlayerPa
           <p className="font-bold text-white truncate">{player.screenName}</p>
           <p className="text-gray-400 text-xs mt-1">{player.wins}W – {player.losses}L</p>
           {isActive && status === 'active' && (
-            <p className="text-blue-300 text-xs mt-2">Your move</p>
+            <p className="text-blue-300 text-xs mt-2">{isMe ? 'Your move' : 'Their move'}</p>
           )}
           {isWinner && <p className="text-green-400 text-xs mt-2 font-bold">Winner!</p>}
           {isLoser && <p className="text-red-400 text-xs mt-2">Lost</p>}

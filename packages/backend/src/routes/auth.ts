@@ -70,6 +70,11 @@ authRouter.post('/signIn', async (req, res) => {
   }
 });
 
+authRouter.post('/signOut', (_req, res) => {
+  res.clearCookie('token', { httpOnly: true, sameSite: 'strict' });
+  res.json({ ok: true });
+});
+
 authRouter.get('/usernameAvailable', async (req, res) => {
   try {
     const username = req.query['username'] as string | undefined;

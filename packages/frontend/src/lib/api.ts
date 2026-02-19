@@ -20,6 +20,7 @@ export const api = {
   signIn: (data: { username: string; password: string }) =>
     request<{ screenName: string }>('POST', '/signIn', data),
   me: () => request<{ screenName: string; wins: number; losses: number }>('GET', '/me'),
+  signOut: () => request<{ ok: boolean }>('POST', '/signOut'),
   usernameAvailable: (username: string) =>
     request<{ available: boolean }>('GET', `/usernameAvailable?username=${encodeURIComponent(username)}`),
   screenNameAvailable: (screenName: string) =>

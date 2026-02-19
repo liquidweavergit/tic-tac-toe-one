@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Winner } from '@ttt/shared';
 
@@ -9,8 +10,7 @@ interface Props {
   onQuit: () => void;
 }
 
-function SnowParticle({ symbol, delay }: { symbol: string; delay: number }) {
-  const x = Math.random() * 100;
+function SnowParticle({ symbol, delay, x }: { symbol: string; delay: number; x: number }) {
   return (
     <motion.span
       className="fixed text-2xl font-bold pointer-events-none select-none"
@@ -24,8 +24,12 @@ function SnowParticle({ symbol, delay }: { symbol: string; delay: number }) {
 }
 
 export function PostGameOverlay({ winner, mySymbol, onRematch, onNewOpponent, onQuit }: Props) {
-  const particles = Array.from({ length: 30 }, (_, i) => i);
   const winSymbol = winner === 'x' ? 'X' : winner === 'o' ? 'O' : null;
+
+  const particles = useMemo(
+    () => Array.from({ length: 30 }, (_, i) => ({ i, x: Math.random() * 100 })),
+    [winner]
+  );
 
   const resultText =
     winner === 'draw'
@@ -37,8 +41,8 @@ export function PostGameOverlay({ winner, mySymbol, onRematch, onNewOpponent, on
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Snow particles */}
-      {winSymbol && particles.map((i) => (
-        <SnowParticle key={i} symbol={winSymbol} delay={i * 0.15} />
+      {winSymbol && particles.map(({ i, x }) => (
+        <SnowParticle key={i} symbol={winSymbol} delay={i * 0.15} x={x} />
       ))}
 
       {/* Modal */}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { GAME_EVENTS, GameOverPayload, CountdownValue } from '@ttt/shared';
 import { useGameStore } from '../store/gameStore';
@@ -21,19 +21,14 @@ export function GamePage() {
     gameId!,
     (payload) => setGameOver(payload),
     () => navigate('/'),
-    (newGameId) => navigate(`/game/${newGameId}`)
-  );
-
-  useEffect(() => {
-    const socket = socketRef.current;
-    if (!socket) return;
-    socket.on(GAME_EVENTS.COUNTDOWN, ({ value }: CountdownValue) => {
+    (newGameId) => navigate(`/game/${newGameId}`),
+    (value) => {
       setCountdownValue(value);
       if (value === 'TIC-TAC-GO!') {
         setTimeout(() => setCountdownValue(null), 1000);
       }
-    });
-  }, [socketRef.current]);
+    },
+  );
 
   if (!gameState) {
     return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-white">Loading…</div>;
@@ -83,6 +78,7 @@ export function GamePage() {
           player={gameState.playerX}
           side="x"
           isActive={gameState.currentTurn === 'x'}
+          isMe={mySymbol === 'x'}
           status={gameState.status}
           winner={gameState.winner}
         />
@@ -114,6 +110,7 @@ export function GamePage() {
           player={gameState.playerO}
           side="o"
           isActive={gameState.currentTurn === 'o'}
+          isMe={mySymbol === 'o'}
           status={gameState.status}
           winner={gameState.winner}
         />
