@@ -1,0 +1,9 @@
+{
+  "name": "tic-tac-toe-one",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --parallel --filter './packages/*' run dev",
+    "build": "pnpm --filter './packages/*' run build",
+    "test": "pnpm --filter './packages/*' run test"
+  }
+}
