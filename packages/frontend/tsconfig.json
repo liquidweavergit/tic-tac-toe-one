@@ -12,7 +12,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "strict": true,
-    "paths": { "@ttt/shared": ["../shared/src/index.ts"] }
+    "paths": { "@ttt/shared": ["../shared/src/index.ts"] },
+    "types": ["vitest/globals"]
   },
   "include": ["src"],
   "exclude": ["node_modules"]
