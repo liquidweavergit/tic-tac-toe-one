@@ -9,8 +9,8 @@
     "migrate": "prisma migrate deploy"
   },
   "dependencies": {
-    "@ttt/shared": "workspace:*",
     "@prisma/client": "^5.0.0",
+    "@ttt/shared": "workspace:*",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -32,6 +32,7 @@
     "socket.io-client": "^4.7.4",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.4",
+    "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
     "typescript": "^5.4.5"
   }
